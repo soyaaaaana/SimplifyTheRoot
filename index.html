@@ -1,0 +1,277 @@
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, interactive-widget=resizes-content">
+    <title>ルートの中を簡単にする</title>
+    <style>
+      @import url(./css/material-design-3/light.css);
+      @import url(./css/material-design-3/dark.css);
+      html {
+        touch-action: manipulation;
+      }
+      body {
+        margin: 1em;
+        background: var(--md-sys-color-background);
+        color: var(--md-sys-color-on-surface);
+      }
+      * {
+        transition-property: background;
+        transition-duration: .5s;
+        user-select: none;
+      }
+
+      .head-border {
+        display: flex;
+        align-items: center;
+        margin: 1rem 0 1rem 0;
+      }
+      .head-border:before,
+      .head-border:after {
+        content: "";
+        height: 1px;
+        flex-grow: 1;
+        background-color: var(--md-sys-color-outline-variant);
+        max-width: 15rem;
+        margin: auto;
+      }
+      .head-border:before {
+        margin-right: 1rem;
+      }
+      .head-border:after {
+        margin-left: 1rem;
+      }
+      body.dark #dark {
+        display: none;
+      }
+      body.light #light {
+        display: none;
+      }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <script type="importmap">
+          {
+            "imports": {
+              "@material/web/": "https://esm.run/@material/web/"
+            }
+          }
+        </script>
+    <script type="module">
+      import '@material/web/all.js';
+      import { styles as typescaleStyles } from '@material/web/typography/md-typescale-styles.js';
+
+      document.adoptedStyleSheets.push(typescaleStyles.styleSheet);
+    </script>
+    <script src="./material-design-3-fix.js"></script>
+    <script>
+      function isPrimeBigInt(n) {
+        const b = BigInt(n);
+        if (b <= 1n) {
+          return false;
+        }
+        if (b <= 3n) { // 2n, 3n は素数
+          return true;
+        }
+        if (b % 2n === 0n || b % 3n === 0n) {
+          return false;
+        }
+
+        // 6k ± 1 の形式で試す
+        // nの平方根まで試す
+        for (let i = 5n; i * i <= b; i = i + 6n) {
+          if (b % i === 0n || b % (i + 2n) === 0n) {
+            return false;
+          }
+        }
+
+        return true;
+      }
+
+      function primeNumbersCalc(length = 0n, offset = 0n) {
+        if (typeof length !== "number" && typeof length !== "bigint") {
+          console.warn("primeNumbersCalc(): length の値が Number または BigInt ではないため、正常に処理されない可能性があります。");
+        }
+        if (typeof offset !== "number" && typeof offset !== "bigint") {
+          console.warn("primeNumbersCalc(): offset の値が Number または BigInt ではないため、正常に処理されない可能性があります。");
+        }
+        let prime_numbers = [];
+        for (let i = 0n; i < BigInt(length) + BigInt(offset); i++) {
+          if (isPrimeBigInt(i + 1n)) {
+            prime_numbers.push(i + 1n);
+          }
+        }
+        return prime_numbers;
+      }
+
+      function isPrimeBigInt(n) {
+        const b = BigInt(n);
+        if (b <= 1n) {
+          return false;
+        }
+        if (b <= 3n) { // 2n, 3n は素数
+          return true;
+        }
+        if (b % 2n === 0n || b % 3n === 0n) {
+          return false;
+        }
+
+        // 6k ± 1 の形式で試す
+        // nの平方根まで試す
+        for (let i = 5n; i * i <= b; i = i + 6n) {
+          if (b % i === 0n || b % (i + 2n) === 0n) {
+            return false;
+          }
+        }
+
+        return true;
+      }
+
+      function primeNumbersCalc(length = 0n, offset = 0n) {
+        if (typeof length !== "number" && typeof length !== "bigint") {
+          console.warn("primeNumbersCalc(): length の値が Number または BigInt ではないため、正常に処理されない可能性があります。");
+        }
+        if (typeof offset !== "number" && typeof offset !== "bigint") {
+          console.warn("primeNumbersCalc(): offset の値が Number または BigInt ではないため、正常に処理されない可能性があります。");
+        }
+        let prime_numbers = [];
+        for (let i = 0n; i < BigInt(length) + BigInt(offset); i++) {
+          if (isPrimeBigInt(i + 1n)) {
+            prime_numbers.push(i + 1n);
+          }
+        }
+        return prime_numbers;
+      }
+
+      /**
+       * 与えられたBigIntの素因数分解を行い、筆算のように出てくる素数のリストを返します。
+       * primeNumbersCalc関数とisPrimeBigInt関数は事前に定義されているものとします。
+       *
+       * @param {bigint} n - 素因数分解する正の整数（BigInt）。
+       * @returns {bigint[]} - 素因数のリスト。
+       */
+      function primeFactorization(number) {
+        if (typeof n !== 'bigint' && typeof n !== 'number') {
+          console.warn("primeFactorization(): number の値が Number または BigInt ではないため、正常に処理されない可能性があります。");
+        }
+
+        let num = BigInt(number);
+
+        if (num <= 1n) {
+          return n;
+        }
+
+        const factors = [];
+        let currentPrimeIndex = 0;
+
+        // ある程度の長さの素数リストを最初に取得しておく
+        // nの平方根までの素数をチェックすれば十分ですが、ここでは単純化のため固定長で取得しています。
+        // より効率を求める場合は、numの平方根に基づいて動的に素数を生成することも検討できます。
+        const initialPrimeLimit = 1000; // 最初の1000個程度の素数をチェック
+        let primes = primeNumbersCalc(BigInt(initialPrimeLimit));
+
+        while (num > 1n) {
+          // 現在の素数リストの範囲を超えた場合は、さらに素数を生成
+          if (currentPrimeIndex >= primes.length) {
+            // 現在のnumの平方根までの素数を生成するか、あるいはより大きな固定長の素数を追加取得します。
+            // ここでは、現在の素数リストの倍の長さを取得する戦略をとります。
+            const nextLength = BigInt(primes.length * 2);
+            primes = primeNumbersCalc(nextLength); // 新しい長さで素数リストを再生成
+            // あるいは、既存のリストに追記する形で primeNumbersCalc(nextLength, BigInt(primes.length)) のように呼び出すことも可能です。
+            // ただし、primeNumbersCalcの現在の実装ではoffsetは適用範囲をずらすものであり、既存のリストに追記する用途ではないため、
+            // ここでは単に再生成する方針をとります。
+          }
+
+          const p = primes[currentPrimeIndex];
+
+          // pがnumの平方根より大きい場合、残りのnumは素数
+          if (p * p > num) {
+            factors.push(num);
+            break;
+          }
+
+          if (num % p === 0n) {
+            // 割り切れたら、その素数をリストに追加し、numを割る
+            factors.push(p);
+            num /= p;
+          } else {
+            // 割り切れなければ、次の素数へ
+            currentPrimeIndex++;
+          }
+        }
+
+        return factors;
+      }
+
+      function separateGroups(arr) {
+        const counts = new Map();
+        // 各要素の出現回数をカウント
+        for (const item of arr) {
+          counts.set(item, (counts.get(item) || 0n) + 1n); // BigIntの加算
+        }
+
+        const groupedItems = [];
+        const ungroupedItems = [];
+
+        for (const [value, count] of counts.entries()) {
+          // 2個以上のペアがある場合
+          if (count >= 2n) {
+            const numGroups = count / 2n; // 作れるペアの数 (整数部)
+            for (let i = 0n; i < numGroups; i++) {
+              groupedItems.push(value); // グループとして1つ追加
+            }
+            const remaining = count % 2n; // ペアにならなかった残りの数
+            if (remaining === 1n) {
+              ungroupedItems.push(value);
+            }
+          } else {
+            // ペアがない場合（1個しか出現しない場合）
+            ungroupedItems.push(value);
+          }
+        }
+
+        return {
+          grouped: groupedItems,
+          ungrouped: ungroupedItems
+        };
+      }
+
+      document.addEventListener("DOMContentLoaded", () => {
+        document.getElementById("dark").addEventListener("click", () => {
+          changeToDarkTheme();
+        });
+        document.getElementById("light").addEventListener("click", () => {
+          changeToLightTheme();
+        });
+
+        document.getElementById("calc").addEventListener("click", () => {
+          let group = separateGroups(primeFactorization(document.getElementById("root_num").value));
+          document.getElementById("result").innerText = `${group.grouped.reduce((accumulator, currentValue) => accumulator * currentValue)}√${group.ungrouped.reduce((accumulator, currentValue) => accumulator * currentValue)}`
+        });
+      });
+    </script>
+  </head>
+  <body class="light" style="display:none;text-align:center">
+    <h1 class="md-typescale-display-medium" style="margin-top:.75em">ルートの中を簡単にする</span></h1>
+    <p>あの中3で習うルートの中を簡単にするやつです</p>
+    <div style="display:flex;justify-content:center;text-align:center;flex-direction:column;margin-top:3rem">
+      <md-outlined-text-field id="root_num" label="簡単にする前のルートの中の数"></md-outlined-text-field>
+      <md-filled-button id="calc" style="margin:1em auto auto auto">計算する</md-filled-button>
+      <span class="head-border md-typescale-body-medium">結果はこの下に表示されます</span>
+      <span id="result"></span>
+    </div>
+
+    <!-- テーマ変更用のボタン -->
+    <div style="position:fixed;right:1rem;top:1rem">
+      <md-outlined-icon-button id="dark">
+        <md-icon>
+          <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"><path d="M480-120q-150 0-255-105T120-480q0-150 105-255t255-105q14 0 27.5 1t26.5 3q-41 29-65.5 75.5T444-660q0 90 63 153t153 63q55 0 101-24.5t75-65.5q2 13 3 26.5t1 27.5q0 150-105 255T480-120Zm0-80q88 0 158-48.5T740-375q-20 5-40 8t-40 3q-123 0-209.5-86.5T364-660q0-20 3-40t8-40q-78 32-126.5 102T200-480q0 116 82 198t198 82Zm-10-270Z"/></svg>
+        </md-icon>
+      </md-outlined-icon-button>
+      <md-outlined-icon-button id="light">
+        <md-icon>
+          <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3"><path d="M480-360q50 0 85-35t35-85q0-50-35-85t-85-35q-50 0-85 35t-35 85q0 50 35 85t85 35Zm0 80q-83 0-141.5-58.5T280-480q0-83 58.5-141.5T480-680q83 0 141.5 58.5T680-480q0 83-58.5 141.5T480-280ZM200-440H40v-80h160v80Zm720 0H760v-80h160v80ZM440-760v-160h80v160h-80Zm0 720v-160h80v160h-80ZM256-650l-101-97 57-59 96 100-52 56Zm492 496-97-101 53-55 101 97-57 59Zm-98-550 97-101 59 57-100 96-56-52ZM154-212l101-97 55 53-97 101-59-57Zm326-268Z"/></svg>
+        </md-icon>
+      </md-outlined-icon-button>
+    </div>
+
+  </body>
+</html>
