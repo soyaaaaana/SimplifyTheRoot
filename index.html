@@ -142,64 +142,49 @@
       }
 
       /**
-       * 与えられたBigIntの素因数分解を行い、筆算のように出てくる素数のリストを返します。
-       * primeNumbersCalc関数とisPrimeBigInt関数は事前に定義されているものとします。
-       *
-       * @param {bigint} n - 素因数分解する正の整数（BigInt）。
-       * @returns {bigint[]} - 素因数のリスト。
-       */
-      function primeFactorization(number) {
-        if (typeof n !== 'bigint' && typeof n !== 'number') {
-          console.warn("primeFactorization(): number の値が Number または BigInt ではないため、正常に処理されない可能性があります。");
-        }
-
-        let num = BigInt(number);
-
-        if (num <= 1n) {
-          return [num];
-        }
-
-        const factors = [];
-        let currentPrimeIndex = 0;
-
-        // ある程度の長さの素数リストを最初に取得しておく
-        // nの平方根までの素数をチェックすれば十分ですが、ここでは単純化のため固定長で取得しています。
-        // より効率を求める場合は、numの平方根に基づいて動的に素数を生成することも検討できます。
-        const initialPrimeLimit = 1000; // 最初の1000個程度の素数をチェック
-        let primes = primeNumbersCalc(BigInt(initialPrimeLimit));
-
-        while (num > 1n) {
-          // 現在の素数リストの範囲を超えた場合は、さらに素数を生成
-          if (currentPrimeIndex >= primes.length) {
-            // 現在のnumの平方根までの素数を生成するか、あるいはより大きな固定長の素数を追加取得します。
-            // ここでは、現在の素数リストの倍の長さを取得する戦略をとります。
-            const nextLength = BigInt(primes.length * 2);
-            primes = primeNumbersCalc(nextLength); // 新しい長さで素数リストを再生成
-            // あるいは、既存のリストに追記する形で primeNumbersCalc(nextLength, BigInt(primes.length)) のように呼び出すことも可能です。
-            // ただし、primeNumbersCalcの現在の実装ではoffsetは適用範囲をずらすものであり、既存のリストに追記する用途ではないため、
-            // ここでは単に再生成する方針をとります。
+   * 与えられたBigIntの素因数分解を行い、筆算のように出てくる素数のリストを返します。
+   * primeNumbersCalc関数とisPrimeBigInt関数は事前に定義されているものとします。
+   *
+   * @param {bigint} n - 素因数分解する正の整数（BigInt）。
+   * @returns {bigint[]} - 素因数のリスト。
+   */
+        function primeFactorization(number) {
+          if (typeof number !== 'bigint' && typeof number !== 'number') {
+            console.warn("primeFactorization(): number の値が Number または BigInt ではないため、正常に処理されない可能性があります。");
           }
 
-          const p = primes[currentPrimeIndex];
-
-          // pがnumの平方根より大きい場合、残りのnumは素数
-          if (p * p > num) {
-            factors.push(num);
-            break;
+          let num = BigInt(number);
+          if (num <= 1n) {
+            return [num];
           }
 
-          if (num % p === 0n) {
-            // 割り切れたら、その素数をリストに追加し、numを割る
-            factors.push(p);
-            num /= p;
-          } else {
-            // 割り切れなければ、次の素数へ
-            currentPrimeIndex++;
+          const factors = [];
+          let currentPrime = 2n; // 最初の素数から開始
+          let primeGeneratorLimit = 1n; // 素数生成の初期上限
+
+          while (num > 1n) {
+            // 現在の素数がnumの平方根より大きい場合、残りのnumは素数
+            if (currentPrime * currentPrime > num) {
+              factors.push(num);
+              break;
+            }
+
+            if (num % currentPrime === 0n) {
+              // 割り切れたら、その素数をリストに追加し、numを割る
+              factors.push(currentPrime);
+              num /= currentPrime;
+            } else {
+              // 割り切れなければ、次の素数を探す
+              // ここで、isPrimeBigInt を直接使って次の素数を検索します。
+              // primeNumbersCalc を使って大量の素数を事前に生成するのではなく、
+              // 必要なときに必要な素数を探索する方が効率的です。
+              do {
+                currentPrime++;
+              } while (!isPrimeBigInt(currentPrime));
+            }
           }
+          return factors;
         }
-
-        return factors;
-      }
 
       function separateGroups(arr) {
         const counts = new Map();
