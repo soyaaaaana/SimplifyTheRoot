@@ -156,7 +156,7 @@
         let num = BigInt(number);
 
         if (num <= 1n) {
-          return n;
+          return [num];
         }
 
         const factors = [];
@@ -243,8 +243,32 @@
         });
 
         document.getElementById("calc").addEventListener("click", () => {
-          let group = separateGroups(primeFactorization(document.getElementById("root_num").value));
-          document.getElementById("result").innerText = `${group.grouped.reduce((accumulator, currentValue) => accumulator * currentValue)}√${group.ungrouped.reduce((accumulator, currentValue) => accumulator * currentValue)}`
+          let el = document.getElementById("root_num");
+          let num = el.value;
+          if (/^\d+$/.test(num)) {
+            el.removeAttribute("error");
+            let group = separateGroups(primeFactorization(num));
+            let result = "";
+            if (group.grouped.length) {
+              result += group.grouped.reduce((accumulator, currentValue) => accumulator * currentValue);
+              if (group.ungrouped.length) {
+                result += "√" + group.ungrouped?.reduce((accumulator, currentValue) => accumulator * currentValue);
+              }
+            }
+            else if (group.ungrouped.length) {
+              result += group.ungrouped?.reduce((accumulator, currentValue) => accumulator * currentValue);
+            }
+            // `${group.grouped.reduce((accumulator, currentValue) => accumulator * currentValue)}${group.ungrouped.length ? ("√" + group.ungrouped?.reduce((accumulator, currentValue) => accumulator * currentValue)) : ""}`
+            document.getElementById("result").innerText = result;
+          }
+          else {
+            el.setAttribute("error", "");
+          }
+        });
+        document.getElementById("root_num").addEventListener("keydown", (e) => {
+          if (event.key === "Enter") {
+            document.getElementById("calc").click();
+          }
         });
       });
     </script>
@@ -253,7 +277,7 @@
     <h1 class="md-typescale-display-medium" style="margin-top:.75em">ルートの中を簡単にする</span></h1>
     <p>あの中3で習うルートの中を簡単にするやつです</p>
     <div style="display:flex;justify-content:center;text-align:center;flex-direction:column;margin-top:3rem">
-      <md-outlined-text-field id="root_num" label="簡単にする前のルートの中の数"></md-outlined-text-field>
+      <md-outlined-text-field id="root_num" label="簡単にする前のルートの中の数" error-text="空欄にする、または数字以外の文字を使用することはできません。"></md-outlined-text-field>
       <md-filled-button id="calc" style="margin:1em auto auto auto">計算する</md-filled-button>
       <span class="head-border md-typescale-body-medium">結果はこの下に表示されます</span>
       <span id="result"></span>
