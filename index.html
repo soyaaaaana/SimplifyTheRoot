@@ -254,9 +254,16 @@
           }
           // e.target.removeAttribute("disabled");
         });
-        document.getElementById("root_num").addEventListener("keydown", (e) => {
+        const root_num_el = document.getElementById("root_num");
+        root_num_el.addEventListener("keydown", (e) => {
           if (event.key === "Enter") {
             document.getElementById("calc").click();
+            root_num_el.focus();
+          }
+        });
+        document.addEventListener("readystatechange", () => {
+          if (document.readyState === "complete") {
+            root_num_el.focus();
           }
         });
       });
@@ -267,7 +274,7 @@
     <p>あの中3で習うルートの中を簡単にするやつです</p>
     <p>※数を大きくしすぎると計算に時間がかかってUIが止まることがあります</p>
     <div style="display:flex;justify-content:center;text-align:center;flex-direction:column;margin-top:3rem">
-      <md-outlined-text-field id="root_num" label="簡単にする前のルートの中の数" error-text="空欄にする、または数字以外の文字を使用することはできません。"></md-outlined-text-field>
+      <md-outlined-text-field id="root_num" label="簡単にする前のルートの中の数" error-text="空欄にする、または数字以外の文字を使用することはできません。" autofocus></md-outlined-text-field>
       <md-filled-button id="calc" style="margin:1em auto auto auto">計算する</md-filled-button>
       <span class="head-border md-typescale-body-medium">結果はこの下に表示されます</span>
       <span id="result" style="user-select:text!important"></span>
