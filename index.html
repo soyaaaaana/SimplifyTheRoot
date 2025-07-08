@@ -142,49 +142,49 @@
       }
 
       /**
-   * 与えられたBigIntの素因数分解を行い、筆算のように出てくる素数のリストを返します。
-   * primeNumbersCalc関数とisPrimeBigInt関数は事前に定義されているものとします。
-   *
-   * @param {bigint} n - 素因数分解する正の整数（BigInt）。
-   * @returns {bigint[]} - 素因数のリスト。
-   */
-        function primeFactorization(number) {
-          if (typeof number !== 'bigint' && typeof number !== 'number') {
-            console.warn("primeFactorization(): number の値が Number または BigInt ではないため、正常に処理されない可能性があります。");
-          }
-
-          let num = BigInt(number);
-          if (num <= 1n) {
-            return [num];
-          }
-
-          const factors = [];
-          let currentPrime = 2n; // 最初の素数から開始
-          let primeGeneratorLimit = 1n; // 素数生成の初期上限
-
-          while (num > 1n) {
-            // 現在の素数がnumの平方根より大きい場合、残りのnumは素数
-            if (currentPrime * currentPrime > num) {
-              factors.push(num);
-              break;
-            }
-
-            if (num % currentPrime === 0n) {
-              // 割り切れたら、その素数をリストに追加し、numを割る
-              factors.push(currentPrime);
-              num /= currentPrime;
-            } else {
-              // 割り切れなければ、次の素数を探す
-              // ここで、isPrimeBigInt を直接使って次の素数を検索します。
-              // primeNumbersCalc を使って大量の素数を事前に生成するのではなく、
-              // 必要なときに必要な素数を探索する方が効率的です。
-              do {
-                currentPrime++;
-              } while (!isPrimeBigInt(currentPrime));
-            }
-          }
-          return factors;
+       * 与えられたBigIntの素因数分解を行い、筆算のように出てくる素数のリストを返します。
+       * primeNumbersCalc関数とisPrimeBigInt関数は事前に定義されているものとします。
+       *
+       * @param {bigint} n - 素因数分解する正の整数（BigInt）。
+       * @returns {bigint[]} - 素因数のリスト。
+       */
+      function primeFactorization(number) {
+        if (typeof number !== 'bigint' && typeof number !== 'number') {
+          console.warn("primeFactorization(): number の値が Number または BigInt ではないため、正常に処理されない可能性があります。");
         }
+
+        let num = BigInt(number);
+        if (num <= 1n) {
+          return [num];
+        }
+
+        const factors = [];
+        let currentPrime = 2n; // 最初の素数から開始
+        let primeGeneratorLimit = 1n; // 素数生成の初期上限
+
+        while (num > 1n) {
+          // 現在の素数がnumの平方根より大きい場合、残りのnumは素数
+          if (currentPrime * currentPrime > num) {
+            factors.push(num);
+            break;
+          }
+
+          if (num % currentPrime === 0n) {
+            // 割り切れたら、その素数をリストに追加し、numを割る
+            factors.push(currentPrime);
+            num /= currentPrime;
+          } else {
+            // 割り切れなければ、次の素数を探す
+            // ここで、isPrimeBigInt を直接使って次の素数を検索します。
+            // primeNumbersCalc を使って大量の素数を事前に生成するのではなく、
+            // 必要なときに必要な素数を探索する方が効率的です。
+            do {
+              currentPrime++;
+            } while (!isPrimeBigInt(currentPrime));
+          }
+        }
+        return factors;
+      }
 
       function separateGroups(arr) {
         const counts = new Map();
@@ -227,11 +227,13 @@
           changeToLightTheme();
         });
 
-        document.getElementById("calc").addEventListener("click", () => {
+        document.getElementById("calc").addEventListener("click", async(e) => {
+          // e.target.setAttribute("disabled", "");
           let el = document.getElementById("root_num");
           let num = el.value;
           if (/^\d+$/.test(num)) {
             el.removeAttribute("error");
+            const start_time = performance.now();
             let group = separateGroups(primeFactorization(num));
             let result = "";
             if (group.grouped.length) {
@@ -241,14 +243,16 @@
               }
             }
             else if (group.ungrouped.length) {
-              result += group.ungrouped?.reduce((accumulator, currentValue) => accumulator * currentValue);
+              result += "√" + group.ungrouped?.reduce((accumulator, currentValue) => accumulator * currentValue);
             }
             // `${group.grouped.reduce((accumulator, currentValue) => accumulator * currentValue)}${group.ungrouped.length ? ("√" + group.ungrouped?.reduce((accumulator, currentValue) => accumulator * currentValue)) : ""}`
             document.getElementById("result").innerText = result;
+            document.getElementById("time").innerText = Math.floor(performance.now() - start_time) / 1000;
           }
           else {
             el.setAttribute("error", "");
           }
+          // e.target.removeAttribute("disabled");
         });
         document.getElementById("root_num").addEventListener("keydown", (e) => {
           if (event.key === "Enter") {
@@ -261,11 +265,14 @@
   <body class="light" style="display:none;text-align:center">
     <h1 class="md-typescale-display-medium" style="margin-top:.75em">ルートの中を簡単にする</span></h1>
     <p>あの中3で習うルートの中を簡単にするやつです</p>
+    <p>※数を大きくしすぎると計算に時間がかかってUIが止まることがあります</p>
     <div style="display:flex;justify-content:center;text-align:center;flex-direction:column;margin-top:3rem">
       <md-outlined-text-field id="root_num" label="簡単にする前のルートの中の数" error-text="空欄にする、または数字以外の文字を使用することはできません。"></md-outlined-text-field>
       <md-filled-button id="calc" style="margin:1em auto auto auto">計算する</md-filled-button>
       <span class="head-border md-typescale-body-medium">結果はこの下に表示されます</span>
       <span id="result" style="user-select:text!important"></span>
+      <br>
+      <span>計算時間: <span id="time">--</span> 秒</span>
     </div>
 
     <!-- テーマ変更用のボタン -->
