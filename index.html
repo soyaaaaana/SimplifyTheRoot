@@ -243,7 +243,8 @@
               }
             }
             else if (group.ungrouped.length) {
-              result += "√" + group.ungrouped?.reduce((accumulator, currentValue) => accumulator * currentValue);
+              console.log(group.ungrouped)
+              result += (group.ungrouped.length === 1 && group.ungrouped[0] === 1n ? "" : "√") + group.ungrouped?.reduce((accumulator, currentValue) => accumulator * currentValue);
             }
             // `${group.grouped.reduce((accumulator, currentValue) => accumulator * currentValue)}${group.ungrouped.length ? ("√" + group.ungrouped?.reduce((accumulator, currentValue) => accumulator * currentValue)) : ""}`
             document.getElementById("result").innerText = result;
