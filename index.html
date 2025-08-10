@@ -337,7 +337,11 @@
             else if (group.ungrouped.length) {
               result += (group.ungrouped.length === 1 && group.ungrouped[0] === 1n ? "" : "√") + group.ungrouped?.reduce((accumulator, currentValue) => accumulator * currentValue);
             }
-            document.getElementById("prime_factorization").innerHTML = createPrimeFactorizationUI(num, factors);
+            let content = "";
+            if (factors[0] !== BigInt(num)) {
+              content = createPrimeFactorizationUI(num, factors);
+            }
+            document.getElementById("prime_factorization").innerHTML = content;
             // `${group.grouped.reduce((accumulator, currentValue) => accumulator * currentValue)}${group.ungrouped.length ? ("√" + group.ungrouped?.reduce((accumulator, currentValue) => accumulator * currentValue)) : ""}`
             document.getElementById("result").innerText = result;
             document.getElementById("time").innerText = Math.floor(performance.now() - start_time) / 1000;
