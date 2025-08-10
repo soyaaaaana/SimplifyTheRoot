@@ -43,7 +43,7 @@ class MaterialDesign3Fix {
             padding = ".5rem";
             input.style.cursor = "default";
           }
-          else if (element.tagName.toLowerCase() === "md-filled-text-field") {
+          if (element.tagName.toLowerCase() === "md-filled-text-field") {
             padding = "1.5rem 1rem .5rem 1rem";
           }
           input.style.padding = padding;
