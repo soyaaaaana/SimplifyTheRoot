@@ -296,8 +296,6 @@
           return newLines.join('\n');
         }
 
-        console.log(html)
-        console.log(alignParentheses(html.replace(/\n$/, "")))
         return `<br><span>素因数分解の筆算</span><br><br><tt style="white-space:pre-wrap;user-select:text">${alignParentheses(html.replace(/\n$/, "")).replace(/(\).+)/g, '<u style="user-select:text">$1</u>')}</tt>`;
       }
 
@@ -335,7 +333,7 @@
               3
             */
             else if (group.ungrouped.length) {
-              result += (group.ungrouped.length === 1 && group.ungrouped[0] === 1n ? "" : "√") + group.ungrouped?.reduce((accumulator, currentValue) => accumulator * currentValue);
+              result += (group.ungrouped.length === 1 && group.ungrouped[0] <= 1n ? "" : "√") + group.ungrouped?.reduce((accumulator, currentValue) => accumulator * currentValue);
             }
             let content = "";
             if (factors[0] !== BigInt(num)) {
@@ -371,7 +369,7 @@
     <p>あの中3で習うルートの中を簡単にするやつです</p>
     <p>※数を大きくしすぎると計算に時間がかかってUIが止まることがあります</p>
     <div style="display:flex;justify-content:center;text-align:center;flex-direction:column;margin-top:3rem">
-      <md-outlined-text-field id="root_num" label="簡単にする前のルートの中の数" error-text="空欄にする、または数字以外の文字を使用することはできません。" autofocus></md-outlined-text-field>
+      <div style="display:flex;justify-content:flex-start;align-items:center;flex-direction:row"><span style="margin-right:1rem;font-size:1.5rem">√</span><md-outlined-text-field style="flex-grow:1" id="root_num" type="number" min="0" label="ルートの中の数" error-text="空欄にする、または数字以外の文字を使用することはできません。" autofocus></md-outlined-text-field></div>
       <md-filled-button id="calc" style="margin:1em auto auto auto">計算する</md-filled-button>
       <span class="head-border md-typescale-body-medium">結果はこの下に表示されます</span>
       <span id="result" style="user-select:text!important"></span>

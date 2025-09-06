@@ -25,11 +25,12 @@ class MaterialDesign3Fix {
         }
       });
     }
-    // テキストフィールド関連の機能改善（marginとpaddingを調整して端っこをクリックしてもinput/textareaがフォーカスされるように + labelを選択不可に + typeがcolorのときのpadding調整 + typeがcolorのときのカーソル変更）
+    // テキストフィールド関連の機能改善（marginとpaddingを調整して端っこをクリックしてもinput/textareaがフォーカスされるように + labelを選択不可に + typeがcolorのときのpadding調整 + typeがcolorのときのカーソル変更 + typeがnumberのときにスタイルが適用されていないスピンボタンを削除）
     {
       const elements = document.querySelectorAll("md-outlined-text-field, md-filled-text-field");
       Array.from(elements).forEach(element => {
-        if (element.getAttribute("type") == "textarea") {
+        const type = element.getAttribute("type");
+        if (type == "textarea") {
           const textarea = element.shadowRoot.querySelector("span.text-field .field textarea");
           textarea.style.margin = "0px";
           textarea.style.padding = "1rem";
@@ -39,9 +40,14 @@ class MaterialDesign3Fix {
           input_wrapper.style.padding = "0px";
           const input = input_wrapper.querySelector(".input");
           let padding = "1rem";
-          if (element.getAttribute("type") == "color") {
+          if (type == "color") {
             padding = ".5rem";
             input.style.cursor = "default";
+          }
+          else if (type == "number") {
+            const style = new CSSStyleSheet();
+            style.replaceSync('input[type="number"]::-webkit-outer-spin-button, input[type="number"]::-webkit-inner-spin-button { display: none; -webkit-appearance: none; -moz-appearance: textfield; }');
+            element.shadowRoot.adoptedStyleSheets.push(style);
           }
           if (element.tagName.toLowerCase() === "md-filled-text-field") {
             padding = "1.5rem 1rem .5rem 1rem";
